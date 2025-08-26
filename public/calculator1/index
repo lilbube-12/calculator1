@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background:linear-gradient(#a12268 , #6f52be);
+        }
+
+        .calculatorcontainer {
+            background: linear-gradient(#6f52be , #a12268);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+        }
+
+        .display {
+            width: 100%;
+            height: 80px;
+            background: #1a1a1a;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 2em;
+            text-align: right;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .number, .decimal {
+            background: #404040;
+            color: white;
+        }
+
+        .number:hover, .decimal:hover {
+            background: #505050;
+        }
+
+        .operator {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #e85a2f;
+        }
+
+        .equals {
+            background: #a5d4f3;
+            color: rgb(117, 54, 107);
+        }
+
+        .equals:hover {
+            background: #de77f3;
+        }
+
+        .clear, .clear-entry {
+            background: #31e783;
+            color: white;
+        }
+
+        .clear:hover, .clear-entry:hover {
+            background: #8e0bda;
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculatorcontainer">
+        <input type="text" class="display" id="username" readonly>
+        <div class="buttons">
+            <button class="clear" onclick="">C</button>
+            <button class="clear-entry" onclick="">CE</button>
+            <button class="operator" onclick="">⌫</button>
+            <button class="operator" onclick="">/</button>
+            
+            <button class="number" onclick="">7</button>
+            <button class="number" onclick="">8</button>
+            <button class="number" onclick="">9</button>
+            <button class="operator" onclick="">*</button>
+            
+            <button class="number" onclick="">4</button>
+            <button class="number" onclick="">5</button>
+            <button class="number" onclick="">6</button>
+            <button class="operator" onclick="">-</button>
+            
+            <button class="number" onclick="">1</button>
+            <button class="number" onclick="">2</button>
+            <button class="number" onclick="">3</button>
+            <button class="operator" onclick="">+</button>
+            
+            <button class="number zero" onclick="">0</button>
+            <button class="decimal" onclick="">.</button>
+            <button class="equals" onclick="">=</button>
+        </div>
+    </div>
+
+    <script>
+        let ebube = document.querySelectorAll(".calculatorcontainer button");
+        console.log(ebube);
+        let black = document.getElementById("username");
+
+        ebube.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                let buttonContent = btn.textContent;
+                if (buttonContent === "C") {
+                    clearData()
+                } else if (buttonContent === "=") {
+                    Evaluate()
+                } else if (buttonContent === "+/-") {
+                    // TODO: Add toggle positive/negative functionality
+                } else if (buttonContent === "CE") {
+                    clearData()
+                } else if (buttonContent === "⌫") {
+                    clearOne()
+                } else {
+                    appendValue(buttonContent)
+                }
+            })
+        });
+
+        const clearData = () => {
+            black.value = ""
+        };
+
+        const appendValue = (buttonContent) => {
+            black.value += buttonContent;
+        };
+
+        // run calculation
+        const Evaluate = () => {
+            let inputValue = black.value;
+            inputValue = inputValue.replace(/%/g, "/100");
+            try {
+                black.value = eval(inputValue);
+            } catch (e) {
+                black.value = "Undefined";
+                black.style.color = "red";
+                setTimeout(() => {
+                    black.value = "";
+                    black.style.color = "white";
+                }, 5000)
+            }
+        };
+
+        const clearOne = () => {
+            let inputData = black.value;
+            black.value = inputData.slice(0, -1);
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9' || key === '.' || ['+', '-', '*', '/'].includes(key)) {
+                appendValue(key);
+            } else if (key === 'Enter' || key === '=') {
+                Evaluate();
+            } else if (key === 'Escape') {
+                clearData();
+            } else if (key === 'Backspace') {
+                clearOne();
+            }
+        });
+
+        // Initialize display
+        black.value = '';
+    </script>
+</body>
+</html>
